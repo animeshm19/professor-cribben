@@ -1,0 +1,36 @@
+
+@import "tailwindcss";
+@import url('https://fonts.googleapis.com/css2?family=Syne:wght@700;800&display=swap');
+/* Define our premium dark aesthetic and custom animations */
+@theme {
+  --color-background: #050505;
+  --color-surface: rgba(255, 255, 255, 0.03);
+  --color-border: rgba(255, 255, 255, 0.08);
+  --font-sans: "Inter", system-ui, sans-serif;
+  
+  --animate-shimmer: shimmer 8s infinite linear;
+}
+
+@keyframes shimmer {
+  0%, 100% { background-position: 0% 50%; }
+  50% { background-position: 100% 50%; }
+}
+
+/* Base styles to set the canvas */
+@layer base {
+  body {
+    background-color: var(--color-background);
+    color: var(--color-zinc-200);
+    -webkit-font-smoothing: antialiased;
+    overflow-x: hidden;
+  }
+  
+  ::selection {
+    background-color: var(--color-zinc-800);
+    color: white;
+  }
+
+  html {
+    scroll-behavior: smooth;
+  }
+}
