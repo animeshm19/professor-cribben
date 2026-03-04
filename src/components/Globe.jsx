@@ -26,13 +26,11 @@ export default function Globe({ config }) {
       width: width * 2,
       height: width * 2,
       onRender: (state) => {
-        // Smooth idle rotation
         if (pointerInteracting.current === null) {
           phi += 0.003; 
         }
         state.phi = phi + pointerInteractionMovement.current;
         
-        // Sync width to prevent crashes
         if (containerRef.current) {
           width = containerRef.current.offsetWidth;
         }
@@ -41,7 +39,6 @@ export default function Globe({ config }) {
       },
     });
 
-    // Fade in
     setTimeout(() => {
       if (canvasRef.current) canvasRef.current.style.opacity = "1";
     }, 100);
@@ -57,11 +54,8 @@ export default function Globe({ config }) {
       ref={containerRef} 
       className="relative w-full aspect-square max-w-[800px] mx-auto flex items-center justify-center group"
     >
-      
-      {/* 1. ATMOSPHERIC CORONA (The deep blue glow radiating from behind the planet) */}
       <div className="absolute inset-4 bg-blue-500/10 blur-[60px] rounded-full pointer-events-none transition-opacity duration-1000 group-hover:opacity-70 opacity-40" />
 
-      {/* 2. THE WEBGL PLANET */}
       <canvas
         className="w-full h-full opacity-0 transition-opacity duration-1000 ease-in-out relative z-10"
         ref={canvasRef}
@@ -93,8 +87,8 @@ export default function Globe({ config }) {
         }}
       />
 
-      {/* 3. VIGNETTE SHADOW (Creates a 3D spherical illusion by darkening the edges) */}
-      <div className="absolute inset-0 shadow-[inset_0_0_60px_rgba(0,0,0,0.9)] rounded-full pointer-events-none z-20" />
+      {/* --- THEME AWARE VIGNETTE SHADOW --- */}
+      <div className="absolute inset-0 shadow-[inset_0_0_60px_rgba(252,252,252,0.9)] dark:shadow-[inset_0_0_60px_rgba(5,5,5,0.9)] rounded-full pointer-events-none z-20 transition-shadow duration-1000" />
       
     </div>
   );
