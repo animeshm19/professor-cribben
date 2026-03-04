@@ -1,117 +1,187 @@
-import { useRef } from "react";
-import { Canvas, useFrame } from "@react-three/fiber";
+import { useRef, useState, useEffect } from "react";
 import { motion, useScroll, useTransform, useSpring } from "framer-motion";
 import { siteConfig } from "../data/config";
+import { Activity, Target, Scan, Fingerprint } from "lucide-react";
 
-// --- 1. THE 3D MORPHING CORE ---
-function MorphingMesh({ scrollProgress }) {
-  const meshRef = useRef();
-  const smoothScroll = useSpring(scrollProgress, { damping: 20, stiffness: 100 });
+export default function Research() {
+  const containerRef = useRef(null);
+  const { researchInterests } = siteConfig;
+  const totalItems = researchInterests.length;
 
-  useFrame((state) => {
-    const t = state.clock.getElapsedTime();
-    const scroll = smoothScroll.get();
-    if (meshRef.current) {
-      meshRef.current.rotation.y = t * 0.2 + scroll * 5;
-      meshRef.current.rotation.x = Math.sin(t * 0.1) * 0.5 + scroll * 2;
-      const s = 1.5 + Math.sin(t) * 0.1 + scroll * 0.5;
-      meshRef.current.scale.set(s, s, s);
-    }
+  // Track the scroll progress through this massive 400vh section
+  const { scrollYProgress } = useScroll({
+    target: containerRef,
+    offset: ["start start", "end end"]
   });
 
-  return (
-    <mesh ref={meshRef}>
-      <icosahedronGeometry args={[1, 4]} />
-      <meshBasicMaterial wireframe color="#3b82f6" transparent opacity={0.1} />
-    </mesh>
-  );
-}
+  // Smooth out the scroll data for physics
+  const smoothProgress = useSpring(scrollYProgress, { stiffness: 50, damping: 20, mass: 1 });
 
-// --- 2. THE HOLOGRAPHIC SHOWPIECE ---
-const ShowpieceCard = ({ item }) => {
-  return (
-    <div className="relative h-[65vh] w-[85vw] md:w-[45vw] lg:w-[32vw] shrink-0 flex flex-col justify-end p-8 md:p-12 group">
-      
-      <div className="absolute inset-0 bg-[#0c0c0e]/40 backdrop-blur-2xl border border-white/5 rounded-[2.5rem] transition-all duration-700 group-hover:border-blue-500/40 group-hover:bg-[#0c0c0e]/60 shadow-2xl" />
-      
-      <div className="absolute top-0 right-0 w-32 h-32 bg-blue-500/10 blur-[80px] rounded-full opacity-0 group-hover:opacity-100 transition-opacity duration-700" />
+  // Map the scroll progress to an active index (0 to 5)
+  const [activeIndex, setActiveIndex] = useState(0);
+  
+  useEffect(() => {
+    return smoothProgress.onChange((latest) => {
+      // Calculate which research item should be active based on scroll depth
+      const newIndex = Math.min(
+        Math.max(Math.floor(latest * totalItems), 0),
+        totalItems - 1
+      );
+      setActiveIndex(newIndex);
+    });
+  }, [smoothProgress, totalItems]);
 
-      <div className="relative z-10 transition-transform duration-700 group-hover:translate-y-[-8px]">
-        <div className="flex items-center justify-between mb-6">
-          <span className="text-6xl font-black text-white/[0.02] font-mono leading-none group-hover:text-blue-500/10 transition-colors">
-            {item.id}
-          </span>
-          <span className="text-[10px] font-mono tracking-[0.3em] uppercase text-blue-400 border border-blue-500/20 px-3 py-1 rounded-full bg-blue-500/5">
-            {item.tag}
-          </span>
-        </div>
-        
-        <h3 className="text-2xl md:text-3xl font-bold text-white mb-5 tracking-tight leading-tight" style={{ fontFamily: "'Syne', sans-serif" }}>
-          {item.title}
-        </h3>
-        
-        <div className="relative h-[1px] w-full bg-white/5 mb-6 overflow-hidden">
-          <motion.div 
-            className="absolute inset-y-0 left-0 bg-blue-500 shadow-[0_0_10px_rgba(59,130,246,0.8)]"
-            initial={{ width: "0%" }}
-            whileInView={{ width: "100%" }}
-            transition={{ duration: 1.5, ease: "easeInOut" }}
-          />
-        </div>
-        
-        <p className="text-zinc-400 text-sm leading-relaxed font-light group-hover:text-zinc-200 transition-colors">
-          {item.description}
-        </p>
-      </div>
-    </div>
-  );
-};
-
-// --- 3. MAIN SECTION ---
-export default function Research() {
-  const targetRef = useRef(null);
-  const { scrollYProgress } = useScroll({ target: targetRef });
-
-  // FIXED: Increased the transform range from -70% to -85% 
-  // This pushes the track further to ensure card 05 and 06 reach the center
-  const x = useTransform(scrollYProgress, [0, 1], ["0%", "-85%"]);
+  // 3D Camera Push Effect
+  const zPush = useTransform(smoothProgress, [0, 1], [0, 1500]);
+  const scanLineY = useTransform(smoothProgress, [0, 1], ["0%", "100%"]);
 
   return (
-    <section ref={targetRef} id="research" className="relative h-[400vh] bg-[#050505]">
+    <section ref={containerRef} id="research" className="relative h-[400vh] bg-[#050505]">
       
-      <div className="sticky top-0 h-screen flex flex-col justify-center overflow-hidden">
+      {/* THE PINNED MEDICAL TERMINAL */}
+      <div className="sticky top-0 h-screen w-full overflow-hidden flex items-center justify-center border-y border-white/5">
         
-        <div className="absolute inset-0 z-0">
-          <Canvas camera={{ position: [0, 0, 5], fov: 45 }}>
-            <MorphingMesh scrollProgress={scrollYProgress} />
-          </Canvas>
-        </div>
-
-        <div className="absolute inset-0 bg-[radial-gradient(circle_at_center,transparent_0%,#050505_90%)] z-10 pointer-events-none" />
-
-        <div className="relative z-30 w-full px-6 md:px-20 lg:px-32 mb-8">
-          <motion.h2 
-            initial={{ opacity: 0, x: -20 }}
-            whileInView={{ opacity: 1, x: 0 }}
-            transition={{ duration: 1 }}
-            className="text-xs font-semibold tracking-[0.5em] uppercase text-zinc-500 flex items-center gap-6"
-          >
-            <span className="w-12 h-[1px] bg-blue-500 shadow-[0_0_10px_rgba(59,130,246,0.8)]" />
-            Latent Research Space
-          </motion.h2>
-        </div>
-
+        {/* Terminal Background Grid & Scanline */}
+        <div className="absolute inset-0 bg-[linear-gradient(rgba(255,255,255,0.03)_1px,transparent_1px),linear-gradient(90deg,rgba(255,255,255,0.03)_1px,transparent_1px)] bg-[size:50px_50px] pointer-events-none" />
         <motion.div 
-          style={{ x }} 
-          className="flex gap-8 md:gap-12 px-6 md:px-20 lg:px-32 relative z-20"
+          style={{ top: scanLineY }} 
+          className="absolute left-0 right-0 h-[2px] bg-blue-500/50 shadow-[0_0_20px_rgba(59,130,246,0.8)] z-50 pointer-events-none" 
+        />
+        
+        {/* HUD UI: Top Left */}
+        <div className="absolute top-8 left-8 flex flex-col gap-2 z-40 pointer-events-none hidden md:flex">
+          <div className="flex items-center gap-3 text-blue-500 font-mono text-xs uppercase tracking-widest">
+            <Scan size={16} className="animate-pulse" />
+            <span>fMRI Volumetric Scrubber</span>
+          </div>
+          <div className="text-zinc-500 font-mono text-[10px] uppercase tracking-widest pl-7">
+            Subject: UAlberta / Node_04
+          </div>
+        </div>
+
+        {/* HUD UI: Top Right (Live Depth Tracker) */}
+        <div className="absolute top-8 right-8 flex flex-col items-end gap-2 z-40 pointer-events-none">
+          <div className="flex items-center gap-3">
+            <span className="text-zinc-500 font-mono text-xs uppercase tracking-widest">Z-Depth Axis</span>
+            <div className="w-2 h-2 rounded-full bg-red-500 animate-pulse shadow-[0_0_8px_rgba(239,68,68,0.8)]" />
+          </div>
+          <div className="text-white font-mono text-xl tracking-tighter">
+            -<motion.span>{useTransform(smoothProgress, p => (p * 1000).toFixed(2))}</motion.span>mm
+          </div>
+        </div>
+
+        {/* --- CENTER: THE 3D fMRI SLICE SIMULATION --- */}
+        <div 
+          className="absolute inset-0 flex items-center justify-center pointer-events-none z-10"
+          style={{ perspective: "1000px" }}
         >
-          {siteConfig.researchInterests.map((item) => (
-            <ShowpieceCard key={item.id} item={item} />
-          ))}
+          <motion.div 
+            style={{ z: zPush }} 
+            className="relative w-[300px] h-[400px] md:w-[400px] md:h-[500px]"
+          >
+            {/* Generate 8 layered "slices" of the brain visualization */}
+            {[...Array(8)].map((_, i) => (
+              <motion.div
+                key={i}
+                className="absolute inset-0 border border-blue-500/20 rounded-[40%_60%_70%_50%] mix-blend-screen"
+                style={{
+                  transform: `translateZ(${-i * 150}px)`,
+                  boxShadow: i === activeIndex ? "inset 0 0 50px rgba(59,130,246,0.3), 0 0 50px rgba(59,130,246,0.2)" : "none",
+                  borderColor: i === activeIndex ? "rgba(59, 130, 246, 0.8)" : "rgba(59, 130, 246, 0.2)",
+                  transition: "all 0.5s ease"
+                }}
+                animate={{
+                  rotateZ: [0, 360],
+                  borderRadius: ["40% 60% 70% 50%", "50% 40% 60% 70%", "70% 50% 40% 60%", "40% 60% 70% 50%"]
+                }}
+                transition={{
+                  duration: 20 + i * 2,
+                  repeat: Infinity,
+                  ease: "linear"
+                }}
+              />
+            ))}
+            
+            {/* Central glowing core targeting the active node */}
+            <div className="absolute inset-0 flex items-center justify-center">
+              <div className="w-1 h-1 bg-white rounded-full shadow-[0_0_30px_10px_rgba(255,255,255,0.8)]" />
+              <Target size={40} className="absolute text-white/20 animate-[spin_4s_linear_infinite]" />
+            </div>
+          </motion.div>
+        </div>
+
+        {/* --- RIGHT PANEL: DYNAMIC RESEARCH DATA --- */}
+        <div className="absolute right-0 top-0 bottom-0 w-full md:w-[40%] bg-gradient-to-l from-[#050505] via-[#050505]/90 to-transparent z-30 flex items-center justify-end px-6 md:px-16 pointer-events-none">
           
-          {/* FIXED: Increased spacer width to allow the final card to dock in the center */}
-          <div className="w-[60vw] shrink-0" />
-        </motion.div>
+          <div className="w-full max-w-md relative pointer-events-auto">
+            {researchInterests.map((item, index) => {
+              const isActive = index === activeIndex;
+              return (
+                <motion.div
+                  key={item.id}
+                  initial={false}
+                  animate={{
+                    opacity: isActive ? 1 : 0,
+                    x: isActive ? 0 : 50,
+                    filter: isActive ? "blur(0px)" : "blur(10px)",
+                    pointerEvents: isActive ? "auto" : "none"
+                  }}
+                  transition={{ duration: 0.5, ease: "easeOut" }}
+                  className="absolute top-1/2 -translate-y-1/2 left-0 right-0 flex flex-col"
+                >
+                  <div className="flex items-center gap-3 mb-6">
+                    <Activity size={18} className="text-blue-500" />
+                    <span className="bg-blue-500/10 text-blue-400 text-[10px] font-mono uppercase tracking-widest px-3 py-1 rounded border border-blue-500/20">
+                      Coordinate Cluster {item.id}
+                    </span>
+                  </div>
+                  
+                  <h3 className="text-3xl md:text-5xl font-bold text-white mb-4 leading-tight drop-shadow-lg" style={{ fontFamily: "'Syne', sans-serif" }}>
+                    {item.title}
+                  </h3>
+                  
+                  <div className="w-12 h-[2px] bg-blue-500 mb-6 shadow-[0_0_10px_rgba(59,130,246,0.8)]" />
+                  
+                  <p className="text-zinc-400 font-light text-lg leading-relaxed mb-8 mix-blend-screen">
+                    {item.description}
+                  </p>
+
+                  <div className="flex items-center gap-6 mt-auto">
+                    <div className="flex flex-col">
+                      <span className="text-[9px] text-zinc-600 font-mono uppercase tracking-widest mb-1">Sector Tag</span>
+                      <span className="text-xs text-zinc-300 font-mono uppercase tracking-widest flex items-center gap-2">
+                        <Fingerprint size={12} className="text-zinc-500" />
+                        {item.tag}
+                      </span>
+                    </div>
+                  </div>
+                  
+                </motion.div>
+              );
+            })}
+          </div>
+        </div>
+
+        {/* HUD UI: Bottom Left Tracker */}
+        <div className="absolute bottom-8 left-8 flex items-end gap-6 z-40 pointer-events-none hidden md:flex">
+          <div className="flex gap-1 items-end h-8">
+            {[...Array(6)].map((_, i) => (
+              <motion.div 
+                key={i}
+                className="w-1.5 bg-blue-500/50 rounded-t"
+                animate={{ height: ["20%", "100%", "20%"] }}
+                transition={{ duration: 1.5, repeat: Infinity, delay: i * 0.1 }}
+                style={{ 
+                  backgroundColor: activeIndex === i ? "rgba(59,130,246,1)" : "rgba(59,130,246,0.2)",
+                  boxShadow: activeIndex === i ? "0 0 10px rgba(59,130,246,0.8)" : "none"
+                }}
+              />
+            ))}
+          </div>
+          <span className="text-[10px] font-mono text-zinc-500 uppercase tracking-widest">
+            Dataset {activeIndex + 1} / {totalItems}
+          </span>
+        </div>
 
       </div>
     </section>

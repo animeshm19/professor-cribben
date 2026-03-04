@@ -1,87 +1,17 @@
 import createGlobe from "cobe";
-import { useCallback, useEffect, useRef } from "react";
-import { useSpring } from "react-spring";
-import { clsx } from "clsx";
-import { twMerge } from "tailwind-merge";
+import { useEffect, useRef } from "react";
 
-// Magic UI's utility function for merging Tailwind classes
-function cn(...inputs) {
-  return twMerge(clsx(inputs));
-}
-
-// Magic UI's official globe configuration
-const GLOBE_CONFIG = {
-  width: 800,
-  height: 800,
-  onRender: () => {},
-  devicePixelRatio: 2,
-  phi: 0,
-  theta: 0.3,
-  dark: 1, // Set to 1 for dark mode
-  diffuse: 1.2,
-  mapSamples: 16000,
-  mapBrightness: 6,
-  baseColor: [0.3, 0.3, 0.3],
-  markerColor: [0.1, 0.8, 1],
-  glowColor: [0.1, 0.1, 0.1],
-  markers: [
-    { location: [14.5995, 120.9842], size: 0.03 },
-    { location: [19.076, 72.8777], size: 0.1 },
-    { location: [23.8103, 90.4125], size: 0.05 },
-    { location: [30.0444, 31.2357], size: 0.07 },
-    { location: [39.9042, 116.4074], size: 0.08 },
-    { location: [-23.5505, -46.6333], size: 0.1 },
-    { location: [19.4326, -99.1332], size: 0.1 },
-    { location: [40.7128, -74.006], size: 0.1 },
-    { location: [34.6937, 135.5022], size: 0.05 },
-    { location: [41.0082, 28.9784], size: 0.06 },
-  ],
-};
-
-export default function Globe({ className, config = GLOBE_CONFIG }) {
+export default function Globe({ config }) {
   let phi = 0;
   let width = 0;
   const canvasRef = useRef(null);
+  const containerRef = useRef(null);
   const pointerInteracting = useRef(null);
   const pointerInteractionMovement = useRef(0);
-  const [{ r }, api] = useSpring(() => ({
-    r: 0,
-    config: {
-      mass: 1,
-      tension: 280,
-      friction: 40,
-      precision: 0.001,
-    },
-  }));
-
-  const updatePointerInteraction = (value) => {
-    pointerInteracting.current = value;
-    if (canvasRef.current) {
-      canvasRef.current.style.cursor = value !== null ? "grabbing" : "grab";
-    }
-  };
-
-  const updateMovement = (clientX) => {
-    if (pointerInteracting.current !== null) {
-      const delta = clientX - pointerInteracting.current;
-      pointerInteractionMovement.current = delta;
-      api.start({ r: delta / 200 });
-    }
-  };
-
-  const onRender = useCallback(
-    (state) => {
-      if (pointerInteracting.current === null) phi += 0.005;
-      state.phi = phi + r.get();
-      state.width = width * 2;
-      state.height = width * 2;
-    },
-    [r]
-  );
 
   const onResize = () => {
-    if (canvasRef.current) {
-      width = canvasRef.current.offsetWidth;
+    if (containerRef.current) {
+      width = containerRef.current.offsetWidth;
     }
   };
 
@@ -89,44 +19,83 @@ export default function Globe({ className, config = GLOBE_CONFIG }) {
     window.addEventListener("resize", onResize);
     onResize();
 
+    if (!canvasRef.current) return;
+
     const globe = createGlobe(canvasRef.current, {
       ...config,
       width: width * 2,
       height: width * 2,
-      onRender,
+      onRender: (state) => {
+        // Smooth idle rotation
+        if (pointerInteracting.current === null) {
+          phi += 0.003; 
+        }
+        state.phi = phi + pointerInteractionMovement.current;
+        
+        // Sync width to prevent crashes
+        if (containerRef.current) {
+          width = containerRef.current.offsetWidth;
+        }
+        state.width = width * 2;
+        state.height = width * 2;
+      },
     });
 
-    setTimeout(() => (canvasRef.current.style.opacity = "1"));
+    // Fade in
+    setTimeout(() => {
+      if (canvasRef.current) canvasRef.current.style.opacity = "1";
+    }, 100);
+
     return () => {
       globe.destroy();
       window.removeEventListener("resize", onResize);
     };
-  }, [config, onRender]);
+  }, [config]);
 
   return (
-    <div
-      className={cn(
-        "absolute inset-0 mx-auto aspect-[1/1] w-full max-w-[600px]",
-        className
-      )}
+    <div 
+      ref={containerRef} 
+      className="relative w-full aspect-square max-w-[800px] mx-auto flex items-center justify-center group"
     >
+      
+      {/* 1. ATMOSPHERIC CORONA (The deep blue glow radiating from behind the planet) */}
+      <div className="absolute inset-4 bg-blue-500/10 blur-[60px] rounded-full pointer-events-none transition-opacity duration-1000 group-hover:opacity-70 opacity-40" />
+
+      {/* 2. THE WEBGL PLANET */}
       <canvas
-        className={cn(
-          "h-full w-full opacity-0 transition-opacity duration-500 [contain:layout_paint_size]"
-        )}
+        className="w-full h-full opacity-0 transition-opacity duration-1000 ease-in-out relative z-10"
         ref={canvasRef}
-        onPointerDown={(e) =>
-          updatePointerInteraction(
-            e.clientX - pointerInteractionMovement.current
-          )
-        }
-        onPointerUp={() => updatePointerInteraction(null)}
-        onPointerOut={() => updatePointerInteraction(null)}
-        onMouseMove={(e) => updateMovement(e.clientX)}
-        onTouchMove={(e) =>
-          e.touches[0] && updateMovement(e.touches[0].clientX)
-        }
+        onPointerDown={(e) => {
+          pointerInteracting.current = e.clientX - pointerInteractionMovement.current * 100;
+          if (canvasRef.current) canvasRef.current.style.cursor = "grabbing";
+        }}
+        onPointerUp={() => {
+          pointerInteracting.current = null;
+          if (canvasRef.current) canvasRef.current.style.cursor = "grab";
+        }}
+        onPointerOut={() => {
+          pointerInteracting.current = null;
+          if (canvasRef.current) canvasRef.current.style.cursor = "grab";
+        }}
+        onMouseMove={(e) => {
+          if (pointerInteracting.current !== null) {
+            pointerInteractionMovement.current = (e.clientX - pointerInteracting.current) / 100;
+          }
+        }}
+        onTouchMove={(e) => {
+          if (pointerInteracting.current !== null && e.touches[0]) {
+            pointerInteractionMovement.current = (e.touches[0].clientX - pointerInteracting.current) / 100;
+          }
+        }}
+        style={{
+          cursor: "grab",
+          contain: "layout paint size",
+        }}
       />
+
+      {/* 3. VIGNETTE SHADOW (Creates a 3D spherical illusion by darkening the edges) */}
+      <div className="absolute inset-0 shadow-[inset_0_0_60px_rgba(0,0,0,0.9)] rounded-full pointer-events-none z-20" />
+      
     </div>
   );
 }

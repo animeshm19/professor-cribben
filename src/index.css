@@ -1,6 +1,7 @@
-
-@import "tailwindcss";
+/* 1. External Imports MUST be at the very top */
 @import url('https://fonts.googleapis.com/css2?family=Syne:wght@700;800&display=swap');
+@import "tailwindcss";
+
 /* Define our premium dark aesthetic and custom animations */
 @theme {
   --color-background: #050505;
@@ -23,6 +24,9 @@
     color: var(--color-zinc-200);
     -webkit-font-smoothing: antialiased;
     overflow-x: hidden;
+    
+    /* Hides default cursor for the custom magnetic cursor */
+    cursor: none; 
   }
   
   ::selection {
@@ -32,5 +36,10 @@
 
   html {
     scroll-behavior: smooth;
+  }
+
+  /* Make sure buttons and links don't show the default pointer hand */
+  a, button {
+    cursor: none;
   }
 }

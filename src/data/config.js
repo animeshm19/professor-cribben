@@ -45,38 +45,41 @@ export const siteConfig = {
       description: "Pioneering covariate-adjusted semiparametric transformation models for Gaussian graphical analysis in massive datasets."
     }
   ],
-  lab: {
+lab: {
     story: "Our research group operates at the intersection of statistical learning and neuroscience. We are a collaborative node of analytical minds deciphering the architecture of the human brain.",
     current: {
       phd: [
-        { name: "Elena Rostova", role: "PhD Candidate", focus: "Dynamic Functional Connectivity", image: "https://images.unsplash.com/photo-1573496359142-b8d87734a5a2?w=800&q=80" },
-        { name: "Marcus Chen", role: "PhD Candidate", focus: "Non-Parametric Tensor Models", image: "https://images.unsplash.com/photo-1556157382-97eda2d62296?w=800&q=80" },
-        { name: "Sophia Al-Fayed", role: "PhD Candidate", focus: "Extreme Value Dependence", image: "https://images.unsplash.com/photo-1580489944761-15a19d654956?w=800&q=80" },
-        { name: "James O'Connor", role: "PhD Candidate", focus: "Spectral Clustering Methods", image: "https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=800&q=80" },
-        { name: "Wei Lin", role: "PhD Candidate", focus: "Bayesian Network Architectures", image: "https://images.unsplash.com/photo-1531427186611-ecfd6d936c79?w=800&q=80" }
+        { name: "Martin Ondrus", role: "PhD Candidate", focus: "Neuroscience and Mental Health Institute (Spring 2022–)", image: "https://images.unsplash.com/photo-1573496359142-b8d87734a5a2?w=800&q=80" },
+        { name: "Mehrnaz Behrooz", role: "PhD Candidate", focus: "Dept. of Accounting & Business Analytics (Winter 2021–)", image: "https://images.unsplash.com/photo-1556157382-97eda2d62296?w=800&q=80" },
+        { name: "Bo Han", role: "PhD Candidate", focus: "Dept. of Accounting & Business Analytics (Fall 2020–)", image: "https://images.unsplash.com/photo-1580489944761-15a19d654956?w=800&q=80" },
+        { name: "Yasser Zeinali", role: "PhD Candidate", focus: "Dept. of Accounting & Business Analytics (Fall 2020–)", image: "https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=800&q=80" },
+        { name: "Elnaz Nabiyi", role: "Former PhD Candidate", focus: "Dept. of Accounting, Operations & IS (Fall 2018–2020)", image: "https://images.unsplash.com/photo-1531427186611-ecfd6d936c79?w=800&q=80" }
       ],
       masters: [
-        { name: "Sarah Jenkins", role: "MSc Student", focus: "Time Series Analysis", image: "https://images.unsplash.com/photo-1438761681033-6461ffad8d80?w=800&q=80" },
-        { name: "David Ndlovu", role: "MSc Student", focus: "Anomaly Detection on Graphs", image: "https://images.unsplash.com/photo-1472099645785-5658abf4ff4e?w=800&q=80" },
-        { name: "Emily Sato", role: "MSc Student", focus: "Multivariate Data Clustering", image: "https://images.unsplash.com/photo-1544005313-94ddf0286df2?w=800&q=80" },
-        { name: "Michael Chang", role: "MSc Student", focus: "Predictive fMRI Modeling", image: "https://images.unsplash.com/photo-1500648767791-00dcc994a43e?w=800&q=80" },
-        { name: "Aisha Khan", role: "MSc Student", focus: "Neuroeconomic Forecasting", image: "https://images.unsplash.com/photo-1487412720507-e7ab37603c6f?w=800&q=80" }
+        { name: "Martin Ondrus", role: "MSc Student", focus: "Neuroscience and Mental Health Institute (Winter 2021–2022)", image: "https://images.unsplash.com/photo-1438761681033-6461ffad8d80?w=800&q=80" },
+        { name: "Alex Lewandowski", role: "MSc Student", focus: "Dept. of Mathematical and Statistical Sciences (2016–2018)", image: "https://images.unsplash.com/photo-1472099645785-5658abf4ff4e?w=800&q=80" },
+        { name: "Nadezda Frolova", role: "MSc Student", focus: "Dept. of Mathematical and Statistical Sciences (2014–2016)", image: "https://images.unsplash.com/photo-1544005313-94ddf0286df2?w=800&q=80" },
+        { name: "Yunan Zhu", role: "MSc Student", focus: "Dept. of Mathematical and Statistical Sciences (2014–2015)", image: "https://images.unsplash.com/photo-1500648767791-00dcc994a43e?w=800&q=80" }
       ],
       undergrad: [
-        { name: "David Kim", role: "Undergraduate Researcher", focus: "Data Processing Pipeline", image: "https://images.unsplash.com/photo-1519085360753-af0119f7cbe7?w=800&q=80" },
-        { name: "Jessica Tremblay", role: "Undergraduate Researcher", focus: "Literature Review Analytics", image: "https://images.unsplash.com/photo-1517841905240-472988babdf9?w=800&q=80" },
-        { name: "Omar Hassan", role: "Undergraduate Researcher", focus: "Statistical Model Visualization", image: "https://images.unsplash.com/photo-1506794778202-cad84cf45f1d?w=800&q=80" },
-        { name: "Chloe Bennett", role: "Undergraduate Researcher", focus: "Algorithm Benchmarking", image: "https://images.unsplash.com/photo-1534528741775-53994a69daeb?w=800&q=80" },
-        { name: "Liam Davies", role: "Undergraduate Researcher", focus: "Web Scraping & Formatting", image: "https://images.unsplash.com/photo-1492562080023-ab3db95bfbce?w=800&q=80" }
+        { name: "Xinyu Gu", role: "Visiting Student", focus: "China Agricultural University (Summer 2022)", image: "https://images.unsplash.com/photo-1519085360753-af0119f7cbe7?w=800&q=80" },
+        { name: "Patrick Wyrod", role: "Undergraduate", focus: "Alberta School of Business (Winter 2021)", image: "https://images.unsplash.com/photo-1517841905240-472988babdf9?w=800&q=80" },
+        { name: "Martin Ondrus", role: "Undergraduate", focus: "Alberta School of Business (2020)", image: "https://images.unsplash.com/photo-1506794778202-cad84cf45f1d?w=800&q=80" },
+        { name: "Filip Sadurski", role: "Undergraduate", focus: "Jagiellonian University (Summer 2020)", image: "https://images.unsplash.com/photo-1534528741775-53994a69daeb?w=800&q=80" },
+        { name: "Emily Olds", role: "Undergraduate", focus: "Alberta School of Business (Winter 2020)", image: "https://images.unsplash.com/photo-1492562080023-ab3db95bfbce?w=800&q=80" },
+        { name: "Hanlin Zhang", role: "Visiting Student", focus: "South China University of Technology (Summer 2019)", image: "https://images.unsplash.com/photo-1519085360753-af0119f7cbe7?w=800&q=80" },
+        { name: "Xin Xiong", role: "Visiting Student", focus: "Beijing Normal University (Summer 2019)", image: "https://images.unsplash.com/photo-1517841905240-472988babdf9?w=800&q=80" },
+        { name: "Shiying Yang", role: "Undergraduate", focus: "Neuroscience and Mental Health Institute (Fall 2018–)", image: "https://images.unsplash.com/photo-1506794778202-cad84cf45f1d?w=800&q=80" },
+        { name: "Tianwei She", role: "Visiting Student", focus: "Renmin University of China (Fall 2017)", image: "https://images.unsplash.com/photo-1534528741775-53994a69daeb?w=800&q=80" },
+        { name: "Matthew Krill", role: "Undergraduate", focus: "Neuroscience and Mental Health Institute (2016–2017)", image: "https://images.unsplash.com/photo-1492562080023-ab3db95bfbce?w=800&q=80" },
+        { name: "Joel Voss", role: "Undergraduate", focus: "Alberta School of Business (Winter 2017)", image: "https://images.unsplash.com/photo-1519085360753-af0119f7cbe7?w=800&q=80" },
+        { name: "Kristin Langeste", role: "Undergraduate", focus: "Alberta School of Business (Fall 2016)", image: "https://images.unsplash.com/photo-1517841905240-472988babdf9?w=800&q=80" },
+        { name: "Braedan O’Reilly", role: "Undergraduate", focus: "Alberta School of Business (Fall 2015)", image: "https://images.unsplash.com/photo-1506794778202-cad84cf45f1d?w=800&q=80" },
+        { name: "Xiaotong Lin", role: "Visiting Student", focus: "Tsinghua University (2014)", image: "https://images.unsplash.com/photo-1534528741775-53994a69daeb?w=800&q=80" },
+        { name: "Scott Stone", role: "UARE Summer Intern", focus: "University of Lethbridge (Summer 2014)", image: "https://images.unsplash.com/photo-1492562080023-ab3db95bfbce?w=800&q=80" }
       ]
     },
-    alumni: [
-      { name: "Dr. Alicia Vance", role: "Former PhD", currentRole: "Lead Data Scientist at DeepMind" },
-      { name: "Dr. Julian Thorne", role: "Former Postdoc", currentRole: "Assistant Professor at MIT" },
-      { name: "Dr. Mateo Rossi", role: "Former PhD", currentRole: "Quantitative Analyst at Jane Street" },
-      { name: "Sarah O'Brien", role: "Former MSc", currentRole: "Senior Analyst at Statistics Canada" },
-      { name: "Dr. Xinyu Xiong", role: "Former PhD", currentRole: "Research Fellow at Stanford" }
-    ]
+    alumni: []
   },
   publications: [
     { id: "01", year: "2022", title: "Extremal Dependence in Australian Electricity Markets", authors: "Han, L., Cribben, I., Trück, S.", journal: "Under review (Available on arXiv)", link: "#" },
